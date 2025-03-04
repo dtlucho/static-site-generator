@@ -1,7 +1,7 @@
 from enum import Enum
 from htmlnode import LeafNode
 
-TextType = Enum("TextType", ["NORMAL", "BOLD", "ITALIC", "LINK", "IMAGE"])
+TextType = Enum("TextType", ["NORMAL", "BOLD", "ITALIC", "LINK", "IMAGE", "CODE"])
 
 class TextNode:
     def __init__(self, text: str, text_type: TextType, url: str = None):
@@ -27,6 +27,8 @@ class TextNode:
                 return LeafNode("a", text_node.text, {"href": text_node.url})
             case TextType.IMAGE:
                 return LeafNode("img", text_node.text, {"src": text_node.url})
+            case TextType.CODE:
+                return LeafNode("code", text_node.text)
             case _:
                 raise ValueError(f"Invalid text type: {text_node.text_type}")
     
