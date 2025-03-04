@@ -66,6 +66,48 @@ class TestTextNode(unittest.TestCase):
         expected = "TextNode(This is a text node, BOLD, https://example.com)"
         self.assertEqual(repr(node), expected)
 
+    def test_text_node_to_html_node_normal(self):
+        node = TextNode("This is a text node", TextType.NORMAL)
+        html_node = TextNode.text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "p")
+        self.assertEqual(html_node.value, "This is a text node")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_node_bold(self):
+        node = TextNode("This is bold text", TextType.BOLD)
+        html_node = TextNode.text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "b")
+        self.assertEqual(html_node.value, "This is bold text")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_node_italic(self):
+        node = TextNode("This is italic text", TextType.ITALIC)
+        html_node = TextNode.text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "i")
+        self.assertEqual(html_node.value, "This is italic text")
+        self.assertIsNone(html_node.props)
+
+    def test_text_node_to_html_node_link(self):
+        node = TextNode("Click me", TextType.LINK, "https://example.com")
+        html_node = TextNode.text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "a")
+        self.assertEqual(html_node.value, "Click me")
+        self.assertEqual(html_node.props, {"href": "https://example.com"})
+
+    def test_text_node_to_html_node_image(self):
+        node = TextNode("Alt text", TextType.IMAGE, "https://example.com/image.png")
+        html_node = TextNode.text_node_to_html_node(node)
+        self.assertEqual(html_node.tag, "img")
+        self.assertEqual(html_node.value, "Alt text")
+        self.assertEqual(html_node.props, {"src": "https://example.com/image.png"})
+
+    def test_text_node_to_html_node_invalid_type(self):
+        # Create a TextNode with an invalid type (this is a bit hacky for testing)
+        invalid_type = "INVALID"
+        node = TextNode("Test", invalid_type)
+        with self.assertRaises(ValueError):
+            TextNode.text_node_to_html_node(node)
+
 
 if __name__ == "__main__":
     unittest.main()
