@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from inline_markdown import split_nodes_delimiter
+from inline_markdown import extract_markdown_images, extract_markdown_links, split_nodes_delimiter
 
 def print_result(result):
     print("\n")
@@ -138,6 +138,25 @@ class TestSplitNodesDelimiter(unittest.TestCase):
             split_nodes_delimiter([node], "<", TextType.CODE)
         self.assertEqual(str(context.exception), "No closing delimiter < found in text 'This is a <code> text'")
 
+    def test_extract_markdown_images(self):
+        text = "This is a ![image](https://example.com/image.png) text"
+        result = extract_markdown_images(text)
+        self.assertEqual(result, [('image', 'https://example.com/image.png')])
+
+    def test_extract_multiple_markdown_images(self):
+        text = "This is a ![image](https://example.com/image.png) text and ![image2](https://example.com/image2.png) text"
+        result = extract_markdown_images(text)
+        self.assertEqual(result, [('image', 'https://example.com/image.png'), ('image2', 'https://example.com/image2.png')])
+
+    def test_extract_markdown_links(self):
+        text = "This is a [link](https://example.com) text"
+        result = extract_markdown_links(text)
+        self.assertEqual(result, [('link', 'https://example.com')])
+
+    def test_extract_multiple_markdown_links(self):
+        text = "This is a [link](https://example.com) text and [link2](https://example.com/link2) text"
+        result = extract_markdown_links(text)
+        self.assertEqual(result, [('link', 'https://example.com'), ('link2', 'https://example.com/link2')])
 
 if __name__ == "__main__":
     unittest.main()
