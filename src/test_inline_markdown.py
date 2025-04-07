@@ -2,13 +2,6 @@ import unittest
 from textnode import TextNode, TextType
 from inline_markdown import extract_markdown_images, extract_markdown_links, split_nodes_delimiter, split_nodes_image, split_nodes_link, text_to_textnodes
 
-def print_result(result):
-    print("\n")
-    print("--------------------------------")
-    for n in result:
-        print(f"  {n}")
-    print("--------------------------------")
-
 class TestSplitNodesDelimiter(unittest.TestCase):
     # Basic functionality tests
     def test_basic_delimiter(self):
