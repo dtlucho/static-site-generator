@@ -1,7 +1,7 @@
 from enum import Enum
 import re
 
-from htmlnode import ParentNode
+from htmlnode import LeafNode, ParentNode
 from inline_markdown import text_to_textnodes
 from textnode import TextNode
 
@@ -46,3 +46,44 @@ def block_to_block_type(block):
                 return BlockType.OLIST
 
     return BlockType.PARAGRAPH
+
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    children = []
+    
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        match block_type:
+            case BlockType.HEADING:
+                children.append(heading_to_html_node(block))
+            case BlockType.CODE:
+                children.append(code_to_html_node(block))
+            case BlockType.QUOTE:
+                children.append(quote_to_html_node(block))
+            case BlockType.ULIST:
+                pass
+            case BlockType.OLIST:
+                pass
+            case BlockType.PARAGRAPH:
+                pass
+    
+    return ParentNode("div", children)
+
+
+def heading_to_html_node(block):
+    lines = block.split(" ")
+    level = len(lines[0])
+    text = " ".join(lines[1:])
+    content = text_to_textnodes(text)
+    return ParentNode("h" + str(level), [TextNode.text_node_to_html_node(c) for c in content])
+
+def code_to_html_node(block):
+    lines = block.split("\n")
+    code = "\n".join(lines[1:-1])   
+    return ParentNode("pre", [LeafNode("code", code + "\n")])
+
+def quote_to_html_node(block):
+    lines = block.split("\n")
+    content = [line[2:] for line in lines]
+    text_nodes = text_to_textnodes("\n".join(content))
+    return ParentNode("blockquote", [TextNode.text_node_to_html_node(c) for c in text_nodes])

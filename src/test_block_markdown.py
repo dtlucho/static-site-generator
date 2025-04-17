@@ -92,5 +92,63 @@ This is the same paragraph on a new line
         block = "1. This is a list\n2. with items"
         self.assertEqual(block_to_block_type(block), BlockType.OLIST)
 
+    def test_paragraphs(self):
+        md = """
+# This is a heading
+
+## This is a subheading
+
+### This is a **subsubheading**
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>This is a heading</h1><h2>This is a subheading</h2><h3>This is a <b>subsubheading</b></h3></div>",
+        )
+
+    def test_codeblock(self):
+        md = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
+
+    def test_quote(self):
+        md = """
+> This is a quote
+> This is the same quote on a new line
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a quote\nThis is the same quote on a new line</blockquote></div>",
+        )
+
+    def test_quote(self):
+        md = """
+> This is a quote
+> This is the same quote on a new line
+> This is a **bolded** quote
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a quote\nThis is the same quote on a new line\nThis is a <b>bolded</b> quote</blockquote></div>",
+        )
+
 if __name__ == "__main__":
     unittest.main()
