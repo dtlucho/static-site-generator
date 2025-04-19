@@ -50,24 +50,29 @@ def block_to_block_type(block):
 def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
     children = []
-    
     for block in blocks:
-        block_type = block_to_block_type(block)
-        match block_type:
-            case BlockType.HEADING:
-                children.append(heading_to_html_node(block))
-            case BlockType.CODE:
-                children.append(code_to_html_node(block))
-            case BlockType.QUOTE:
-                children.append(quote_to_html_node(block))
-            case BlockType.ULIST:
-                children.append(unordered_list_to_html_node(block))
-            case BlockType.OLIST:
-                children.append(ordered_list_to_html_node(block))
-            case BlockType.PARAGRAPH:
-                children.append(paragraph_to_html_node(block))
-    
-    return ParentNode("div", children)
+        html_node = block_to_html_node(block)
+        children.append(html_node)
+    return ParentNode("div", children, None)
+
+
+def block_to_html_node(block):
+    block_type = block_to_block_type(block)
+    match block_type:
+        case BlockType.HEADING:
+            return heading_to_html_node(block)
+        case BlockType.CODE:
+            return code_to_html_node(block)
+        case BlockType.QUOTE:
+            return quote_to_html_node(block)
+        case BlockType.ULIST:
+            return unordered_list_to_html_node(block)
+        case BlockType.OLIST:
+            return ordered_list_to_html_node(block)
+        case BlockType.PARAGRAPH:
+            return paragraph_to_html_node(block)
+        case _:
+            raise ValueError("invalid block type")
 
 def text_to_children(text):
     text_nodes = text_to_textnodes(text)
