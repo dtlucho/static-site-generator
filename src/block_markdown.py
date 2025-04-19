@@ -111,5 +111,7 @@ def ordered_list_to_html_node(block):
     return ParentNode("ol", children)
 
 def paragraph_to_html_node(block):
-    children = text_to_children(block)
+    lines = block.split("\n")
+    text = " ".join(lines)
+    children = text_to_children(text)
     return ParentNode("p", children)
