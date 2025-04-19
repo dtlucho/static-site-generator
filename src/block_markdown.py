@@ -88,7 +88,7 @@ def code_to_html_node(block):
 def quote_to_html_node(block):
     lines = block.split("\n")
     content = [line[2:] for line in lines]
-    text = "\n".join(content)
+    text = " ".join(content)
     children = text_to_children(text)
     return ParentNode("blockquote", children)
 
