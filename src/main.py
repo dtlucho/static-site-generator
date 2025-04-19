@@ -1,8 +1,9 @@
-from textnode import TextNode, TextType
+from copy_directory import copy_directory
+
+static_dir_path = "./static"
+public_dir_path = "./public"
 
 def main():
-    print("hello world")
-    textnode = TextNode("hello", TextType.NORMAL, "https://www.google.com")
-    print(textnode)
+    copy_directory(static_dir_path, public_dir_path)
 
 main()
